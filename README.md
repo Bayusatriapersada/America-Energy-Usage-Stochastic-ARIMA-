@@ -1,10 +1,10 @@
 # America-Energy-Usage-Stochastic-ARIMA-
 Stochastic Processing for America Energy Usage and its prediction
 by
-Bayu Satria Persada              (1706985924)
-Anandwi Ghuran Muhajallin Arreto (1706985911)
-Fadhilah Rheza P                 (1706042863) 
-Yudhistira Indyka                (1706042895)
+* Bayu Satria Persada              (1706985924)
+* Anandwi Ghuran Muhajallin Arreto (1706985911)
+* Fadhilah Rheza P                 (1706042863) 
+* Yudhistira Indyka                (1706042895)
 
 OVERVIEW
 
@@ -143,3 +143,47 @@ then we try to predict the next data (untrained data) about 10000 hours of energ
 
 ![predict10000](https://github.com/Bayusatriapersada/America-Energy-Usage-Stochastic-ARIMA-/blob/master/Image/Predict%2010000%20hours.png)
 
+after that we gonna make the auto arima, because in real industrial testing, we cant waste time on finding p d q value manually, so we use  this library
+
+```
+from statsmodels.tsa.arima_model import ARIMA
+import pmdarima as pm
+```
+so we can use the auto arima
+and here is the code to find the best optional p , d, q but limited to 3 because this is only for research purposes
+
+```
+df2 = pd.read_csv('https://raw.githubusercontent.com/Bayusatriapersada/America-Energy-Usage-Stochastic-ARIMA-/master/Energy%20Usage%20Data.csv', names=['AEP'],header=0)
+
+model = pm.auto_arima(df2.AEP, start_p=1, start_q=1,
+                      test='adf',       # use adftest to find optimal 'd'
+                      max_p=3, max_q=3, # maximum p and q
+                      m=1,              # frequency of series
+                      d=None,           # let model determine 'd'
+                      seasonal=False,   # No Seasonality
+                      start_P=0, 
+                      D=0, 
+                      trace=True,
+                      error_action='ignore',  
+                      suppress_warnings=True, 
+                      stepwise=True)
+
+print(model.summary())
+```
+this the model summary
+
+![modelauto](https://github.com/Bayusatriapersada/America-Energy-Usage-Stochastic-ARIMA-/blob/master/Image/automodel.png)
+
+then we got the data we need
+
+![finaltest](https://github.com/Bayusatriapersada/America-Energy-Usage-Stochastic-ARIMA-/blob/master/Image/Data.png)
+
+from the image above we got the data we need, the residual data, the corellogram, the skew of the data,density of the data
+
+then we finnaly predict with the auto arima
+
+![finalpredict](https://github.com/Bayusatriapersada/America-Energy-Usage-Stochastic-ARIMA-/blob/master/Image/Final%20Prediction.png)
+
+Thank you
+
+#this is a Open source data #
