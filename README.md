@@ -9,7 +9,7 @@ Yudhistira Indyka                (1706042895)
 OVERVIEW
 
 * [Description](#Description)
-* [Process](#Predicting Process)
+* [Process](#Predicting_Process)
 
 ## Description
 
@@ -28,6 +28,8 @@ To make the data stationary first we need to differenciate it, that is the I (in
 First we check the data by its stationary or not, by checking with adfuller test, if the value is above 0,05 then it is not stationary
 we include this code
 
+
+```
 import numpy as np, pandas as pd
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 import matplotlib.pyplot as plt
@@ -35,7 +37,6 @@ from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.arima_model import ARIMA
 from numpy import log
 from statsmodels.tsa.stattools import acf
-# Import data
 df2 = pd.read_csv('https://raw.githubusercontent.com/Bayusatriapersada/America-Energy-Usage-Stochastic-ARIMA-/master/Energy%20Usage%20Data.csv', names=['AEP'],header=0)
 result = adfuller(df2.AEP.dropna())
 print('ADF Statistic: %f' % result[0])
