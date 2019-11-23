@@ -8,8 +8,8 @@ Yudhistira Indyka                (1706042895)
 
 OVERVIEW
 
-* [Description](# Description)
-* [Process](# Predicting Process)
+* [Description](#Description)
+* [Process](#Predicting Process)
 
 ## Description
 
