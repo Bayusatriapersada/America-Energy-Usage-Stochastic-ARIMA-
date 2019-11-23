@@ -42,5 +42,104 @@ result = adfuller(df2.AEP.dropna())
 print('ADF Statistic: %f' % result[0])
 print('p-value: %f' % result[1])
 ```
+The result of our test is
+![Adfuller](https://github.com/Bayusatriapersada/America-Energy-Usage-Stochastic-ARIMA-/blob/master/Image/Adfuller.png)
+From the data above it can be seen as the P value is lower than 0,05 it means that the daa is alread stationary, by its MEAN or by its STD Deviation.
 
+Next, we try to find the P,D,Q Value for Arima
+P can be find by using PACF that is Partial autocorrelation 
+
+Partial Autocorrelation can be imagined as the correlation between the series and its lag, after excluding the contributions from the intermediate lags. So, PACF sort of conveys the pure correlation between a lag and the series. That way, you will know if that lag is needed in the AR term or not.
+
+Include this Code
+```
+plt.rcParams.update({'figure.figsize':(12,6), 'figure.dpi':120})
+fig, axes = plt.subplots(1, 2, sharex=True)
+axes[0].plot(df2.AEP); axes[0].set_title('Original Series')
+plot_acf(df2.AEP, ax=axes[1])
+plt.show()
+```
+
+Our result on finding
+![PACF](https://github.com/Bayusatriapersada/America-Energy-Usage-Stochastic-ARIMA-/blob/master/Image/PACF%20Autocorellating.png)
+
+Our result is not so great because the autocorrelating graph is too close, it cant be read , and we cant find the P value
+
+next, we find the D Value, D value is differencing, but we dont need that because our data is already Stationary so its D = 0;
+
+After that we need to find the Q value by using ACF, Just like how we looked at the PACF plot for the number of AR terms, you can look at the ACF plot for the number of MA terms. An MA term is technically, the error of the lagged forecast.
+
+The ACF tells how many MA terms are required to remove any autocorrelation in the stationarized series.
+
+Include this code
+```
+fig, axes = plt.subplots(1, 2, sharex=True)
+axes[0].plot(df2.AEP); axes[0].set_title('Original Series')
+axes[1].set(ylim=(0,5))
+plot_pacf(df2.AEP.dropna(), ax=axes[1])
+
+plt.show()
+```
+
+our data ACF
+
+![ACF](https://github.com/Bayusatriapersada/America-Energy-Usage-Stochastic-ARIMA-/blob/master/Image/ACF%20Autocorellating.png)
+
+its as the same as PACF, it cant be read so, for testing purposes we gonna try all the p and q, and we find the best BIC, AIC and that is using P = 3, and Q = 3; on Auto Arima too its using p = 3 and q = 3, Auto Arima gonna be explained later
+
+so we made the model
+
+include this code
+```
+model = ARIMA(df2.AEP, order=(3,0,3))
+model_fit = model.fit(disp=0)
+print(model_fit.summary())
+```
+
+and we find the table for our model summary
+
+![model](https://github.com/Bayusatriapersada/America-Energy-Usage-Stochastic-ARIMA-/blob/master/Image/Model%20Make.png)
+
+thats the summary of our model, for simplification we did not put the test model make so it would be less complicated to see
+
+next, we gonna train the data
+
+using
+```
+train = df2.AEP[:90000]
+test = df2.AEP[90000:]
+```
+we train the data for exactyly 90000 data, and we gonna test 90000 and the rest of the data to see if our prediction is good or not
+
+the include this code
+```
+fitted = model.fit(disp=-1)  
+
+# Forecast
+fc, se, conf = fitted.forecast(121273-90000, alpha=0.05)  # 95% conf
+
+# Make as pandas series
+fc_series = pd.Series(fc, index=test.index)
+lower_series = pd.Series(conf[:, 0], index=test.index)
+upper_series = pd.Series(conf[:, 1], index=test.index)
+
+# Plot
+plt.figure(figsize=(12,5), dpi=100)
+plt.plot(train, label='training')
+plt.plot(test, label='actual')
+plt.plot(fc_series, label='forecast')
+plt.fill_between(lower_series.index, lower_series, upper_series, 
+                 color='k', alpha=.15)
+plt.title('Forecast vs Actuals')
+plt.legend(loc='upper left', fontsize=8)
+plt.show()
+```
+
+then we gonna predict
+
+![predict](https://github.com/Bayusatriapersada/America-Energy-Usage-Stochastic-ARIMA-/blob/master/Image/Prediction.png)
+
+then we try to predict the next data (untrained data) about 10000 hours of energy usage in america
+
+![predict10000](https://github.com/Bayusatriapersada/America-Energy-Usage-Stochastic-ARIMA-/blob/master/Image/Predict%2010000%20hours.png)
 
