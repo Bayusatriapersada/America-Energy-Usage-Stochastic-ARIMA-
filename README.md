@@ -23,6 +23,7 @@ d is the number of differencing required to make the time series stationary
 
 To make the data stationary first we need to differenciate it, that is the I (integrate) part of ARIMA, so if your data is already Stationary then its only ARMA
 
-## Predictiing Process
+## Predicting Process
 
-First we check the data by
+First we check the data by its
+![test](https://github.com/Bayusatriapersada/America-Energy-Usage-Stochastic-ARIMA-/blob/master/Image/ACF%20Autocorellating.png)
